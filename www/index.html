@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASB Foundation — Tournament Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060a14;--bg1:#0b1220;--bg2:#0d1628;--bg3:#0f1d30;
+  --blue:#1a6aff;--blue2:#4d9fff;--red:#e0263e;--red2:#ff5571;
+  --purple:#7040c8;--gold:#f5c842;--silver:#b0bec5;--bronze:#cd8c50;
+  --green:#3dba72;--orange:#e07040;--t1:#e8f0ff;--t2:#7a9abc;--t3:#3a5570;--border:#162235;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+#stars canvas{width:100%;height:100%}
+
+/* ─── HEADER ─── */
+header{position:sticky;top:0;z-index:100;background:#060a14f0;backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.hdr-top{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.logo-hex{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--red));
+  clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;
+  animation:hexP 3s ease-in-out infinite alternate}
+@keyframes hexP{0%{box-shadow:0 0 12px #1a6aff33}100%{box-shadow:0 0 24px #1a6aff66,0 0 10px #e0263e33}}
+.logo-text{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--blue2),#fff 55%,var(--red2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.logo-sub{font-size:7px;letter-spacing:4px;color:var(--t3);text-transform:uppercase;margin-top:-2px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.season-badge{font-size:7px;letter-spacing:1px;color:var(--t3);text-transform:uppercase;
+  border:1px solid var(--border);padding:3px 9px;border-radius:20px;background:#ffffff04;white-space:nowrap}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+
+.stats-bar{display:flex;background:#07101e;border-bottom:1px solid var(--border);overflow-x:auto}
+.stat-item{flex:1;min-width:58px;padding:6px 6px;text-align:center;border-right:1px solid var(--border);cursor:default}
+.stat-item:last-child{border-right:none}
+.stat-n{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;
+  background:linear-gradient(135deg,var(--blue2),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-l{font-size:6px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-top:1px}
+
+.nav-bar{display:flex;background:#080f1c;border-bottom:1px solid var(--border);overflow-x:auto;padding:0 3px}
+.nav-btn{position:relative;height:42px;padding:0 13px;border:none;cursor:pointer;background:transparent;
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--t2);transition:color .25s;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0}
+.nav-btn::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--red));transition:left .25s,right .25s}
+.nav-btn:hover{color:#fff}.nav-btn.active{color:#fff}
+.nav-btn.active::after,.nav-btn:hover::after{left:0;right:0}
+.nav-num{width:16px;height:16px;background:linear-gradient(135deg,var(--blue),var(--purple));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0}
+
+main{position:relative;z-index:5;max-width:820px;margin:0 auto;padding:18px 12px 80px}
+.section{display:none;animation:fadeUp .28s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:2px;background:linear-gradient(90deg,var(--blue2),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sec-sub{color:var(--t3);font-size:8px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+
+/* ─── SHARED ─── */
+.tbadge{font-size:8px;font-weight:700;letter-spacing:.8px;padding:1px 6px;border-radius:3px;font-family:'Rajdhani',sans-serif;flex-shrink:0}
+.tb{background:#0a2448;color:var(--blue2);border:1px solid #1a4a8a44}
+.tbp{background:#1a1040;color:#a070ff;border:1px solid #3a2a8044}
+.ta{background:#2e0d12;color:#ff7755;border:1px solid #6a1a1a44}
+.chip{font-size:9px;padding:2px 7px;border-radius:20px;letter-spacing:.3px;font-weight:600;display:flex;align-items:center;gap:3px}
+.cchamp{background:linear-gradient(135deg,#0e3320,#071a10);color:var(--green);border:1px solid #1a5a3044}
+.crunner{background:linear-gradient(135deg,#3a1a00,#250e00);color:var(--orange);border:1px solid #6a402044}
+.ccancel{background:#111;color:var(--t3);border:1px solid #222;font-style:italic}
+.ccoming{background:linear-gradient(135deg,#0d1a38,#070e20);color:#6090ff;border:1px solid #1a2a5a}
+.ic{color:var(--gold)}.ir{color:var(--orange)}
+.tag2v2{font-size:7px;color:var(--t3);background:#ffffff06;padding:1px 5px;border-radius:3px;border:1px solid var(--border)}
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:14px 0}
+.legend-box{padding:8px 12px;background:var(--bg1);border:1px solid var(--border);border-radius:7px;font-size:9px;color:var(--t3);line-height:2}
+
+/* ─── ORGANIZER ─── */
+.search-wrap{position:relative;margin-bottom:8px}
+.search-input{width:100%;padding:7px 11px 7px 33px;background:var(--bg1);border:1px solid var(--border);
+  border-radius:7px;color:var(--t1);font-family:'Exo 2',sans-serif;font-size:12px;outline:none;transition:border-color .2s}
+.search-input:focus{border-color:var(--blue);box-shadow:0 0 8px #1a6aff18}
+.search-input::placeholder{color:var(--t3)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:12px}
+.filter-row{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+.fpill{padding:2px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;
+  color:var(--t3);font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.fpill:hover{border-color:var(--blue2);color:var(--blue2)}
+.fpill.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.fpill.fb.on{background:#0d2a5a;border-color:var(--blue2);color:var(--blue2)}
+.fpill.fbp.on{background:#1a1040;border-color:#a070ff;color:#a070ff}
+.fpill.fa.on{background:#3a0d14;border-color:#ff7755;color:#ff7755}
+.org-block{margin-bottom:14px;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--bg1);transition:box-shadow .25s}
+.org-block:hover{box-shadow:0 4px 22px #1a6aff12}
+.org-hdr{display:flex;align-items:center;gap:7px;padding:9px 13px;
+  background:linear-gradient(135deg,#0d1e36,#0b1422);border-bottom:1px solid var(--border);position:relative}
+.org-hdr::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--blue),var(--red))}
+.org-tag{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);padding:1px 6px;border:1px solid var(--border);border-radius:3px}
+.org-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:#fff}
+.org-count{margin-left:auto;font-size:7px;color:var(--t3);letter-spacing:1px}
+.org-badge{font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:20px;color:#fff;opacity:.85}
+.tr{padding:8px 13px;border-bottom:1px solid #0c1825;transition:background .15s;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.tr:last-child{border-bottom:none}
+.tr:hover{background:#ffffff03}
+.tr.hidden{display:none}
+.tr-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;color:var(--t1);
+  display:flex;align-items:center;gap:5px;flex:1;min-width:100px;flex-wrap:wrap}
+.tr-status{font-size:8px;color:var(--t3);letter-spacing:1px}
+.ct{color:var(--orange)!important}.ut{color:var(--blue2)!important}
+.tr-players{display:flex;gap:4px;flex-wrap:wrap}
+.no-result{text-align:center;padding:28px;color:var(--t3);font-size:11px;display:none}
+
+/* ─── ACHIEVEMENT ─── */
+.featured-card{position:relative;overflow:hidden;margin-bottom:14px;padding:13px 15px;
+  background:linear-gradient(135deg,#0d1e38,#0f1430);border:1px solid #1a6aff33;border-radius:10px;display:flex;align-items:center;gap:12px}
+.featured-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#1a6aff07,transparent 60%,#e0263e05);pointer-events:none}
+.featured-glow{position:absolute;top:-14px;right:-14px;width:90px;height:90px;
+  border-radius:50%;background:radial-gradient(circle,#1a6aff12,transparent 70%);pointer-events:none}
+.fc-icon{font-size:24px;flex-shrink:0;filter:drop-shadow(0 0 7px var(--gold))}
+.fc-info{flex:1}
+.fc-label{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--blue2);margin-bottom:2px}
+.fc-name{font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;color:#fff;line-height:1.1}
+.fc-stat{font-size:8px;color:var(--t2);margin-top:2px}
+.fc-chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.tap-hint{font-size:8px;color:var(--t3);text-align:center;margin-bottom:7px;letter-spacing:1px}
+.lboard{display:flex;flex-direction:column;gap:5px}
+.prow{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;
+  background:var(--bg1);border:1px solid var(--border);border-radius:8px;
+  transition:all .22s;cursor:pointer;position:relative;overflow:hidden}
+.prow::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--blue),var(--red));opacity:0;transition:opacity .22s}
+.prow:hover{border-color:#1a6aff2a;background:var(--bg2);box-shadow:0 3px 14px #1a6aff12}
+.prow:hover::before{opacity:1}
+.prank{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--t3);min-width:19px;text-align:center;padding-top:1px;flex-shrink:0}
+.rank1{color:var(--gold);text-shadow:0 0 8px #f5c84255}
+.rank2{color:var(--silver)}.rank3{color:var(--bronze)}
+.pinfo{flex:1;min-width:0}
+.pname{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:1px}
+.psumm{font-size:8px;color:var(--t3);margin-bottom:5px}
+.alist{display:flex;flex-direction:column;gap:3px}
+.aitem{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.alabel{font-size:9px;font-weight:700;letter-spacing:.3px;min-width:64px}
+.lc{color:var(--gold)}.lr{color:var(--orange)}
+.atourn{color:var(--t3);font-size:9px}
+.ateam{font-size:8px;color:var(--t2);padding:1px 5px;border-radius:3px}
+.wrrow{display:flex;align-items:center;gap:6px;margin-top:5px}
+.wrl{font-size:7px;color:var(--t3);letter-spacing:1px;white-space:nowrap}
+.wrt{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.wrf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .5s ease}
+.wrp{font-size:8px;color:var(--blue2);font-weight:700;white-space:nowrap}
+.btbadge{margin-left:auto;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;
+  padding:2px 8px;border-radius:20px;flex-shrink:0;align-self:flex-start;margin-top:1px}
+.btB{background:#0a2448;color:var(--blue2);border:1px solid #1a6aff22}
+.btBP{background:#1a1040;color:#a070ff;border:1px solid #6040c822}
+.btA{background:#2e0d12;color:#ff7755;border:1px solid #e0263e22}
+
+/* ─── H2H ─── */
+.h2h-select-row{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.h2h-select{flex:1;min-width:120px;padding:7px 10px;background:var(--bg1);border:1px solid var(--border);
+  border-radius:7px;color:var(--t1);font-family:'Exo 2',sans-serif;font-size:12px;outline:none;cursor:pointer;
+  transition:border-color .2s;-webkit-appearance:none;appearance:none}
+.h2h-select:focus{border-color:var(--blue)}
+.h2h-vs{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--red2);letter-spacing:2px;flex-shrink:0}
+.h2h-go{padding:7px 16px;background:linear-gradient(135deg,var(--blue),var(--purple));border:none;
+  border-radius:7px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:1px;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+.h2h-go:hover{opacity:.85}
+.h2h-result{background:var(--bg1);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.h2h-header{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;
+  padding:16px 16px 12px;background:linear-gradient(135deg,#0d1e38,#0e1430);border-bottom:1px solid var(--border)}
+.h2h-player{text-align:center}
+.h2h-pname{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fff}
+.h2h-pstat{font-size:9px;color:var(--t3);margin-top:2px}
+.h2h-score{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;text-align:center;
+  background:linear-gradient(135deg,var(--blue2),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.h2h-meetings{padding:12px 14px}
+.h2h-meet-title{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.h2h-meet-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg2);
+  border-radius:7px;margin-bottom:5px;border:1px solid var(--border)}
+.h2h-meet-tourn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;color:var(--t1);flex:1}
+.h2h-meet-result{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px}
+.h2h-win1{background:#0e332022;color:var(--green);border:1px solid #1a5a3033}
+.h2h-win2{background:#3a1a0022;color:var(--orange);border:1px solid #6a402033}
+.h2h-nomeet{text-align:center;padding:24px;color:var(--t3);font-size:12px}
+
+/* ─── HALL OF FAME ─── */
+.hof-grid{display:grid;gap:8px}
+.hof-card{display:flex;align-items:center;gap:12px;padding:11px 14px;
+  background:var(--bg1);border:1px solid var(--border);border-radius:9px;
+  position:relative;overflow:hidden;transition:all .22s}
+.hof-card:hover{border-color:#1a6aff2a;box-shadow:0 3px 14px #1a6aff12}
+.hof-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px}
+.hof-card.gold::before{background:var(--gold)}
+.hof-card.blue::before{background:var(--blue)}
+.hof-card.red::before{background:var(--red)}
+.hof-card.purple::before{background:var(--purple)}
+.hof-card.green::before{background:var(--green)}
+.hof-icon{font-size:20px;flex-shrink:0;filter:drop-shadow(0 0 6px currentColor)}
+.hof-info{flex:1}
+.hof-title{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:2px}
+.hof-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:#fff}
+.hof-desc{font-size:9px;color:var(--t2);margin-top:1px}
+.hof-badge{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0}
+
+/* ─── RIVALRY ─── */
+.rivalry-card{padding:13px 14px;background:linear-gradient(135deg,#0f1a2e,#14102a);
+  border:1px solid #e0263e22;border-radius:10px;margin-bottom:10px;position:relative;overflow:hidden}
+.rivalry-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,#e0263e07);pointer-events:none}
+.rivalry-label{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--red2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.rivalry-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#e0263e22,transparent)}
+.rivalry-names{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
+.rivalry-names span{color:var(--red2)}
+.rivalry-stat{font-size:9px;color:var(--t2);display:flex;gap:10px;flex-wrap:wrap}
+.rivalry-meetings{display:flex;flex-direction:column;gap:5px;margin-top:9px}
+.riv-row{display:flex;align-items:center;gap:7px;padding:5px 9px;background:#0a101e;
+  border-radius:6px;border:1px solid var(--border)}
+.riv-tourn{font-size:10px;color:var(--t1);flex:1;font-family:'Rajdhani',sans-serif;font-weight:600}
+.riv-out{font-size:8px;font-weight:700;padding:1px 7px;border-radius:20px}
+
+/* ─── TIER ─── */
+.compare-toggle{display:flex;gap:5px;margin-bottom:10px}
+.ctbtn{flex:1;padding:6px;border-radius:7px;border:1px solid var(--border);background:transparent;
+  font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--t3);cursor:pointer;text-transform:uppercase;transition:all .2s}
+.ctbtn.on{background:linear-gradient(135deg,#0d1e38,#101428);border-color:var(--blue2);color:var(--blue2)}
+.tier-grid{display:grid;gap:6px}
+.tier-card{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:center;
+  background:var(--bg1);border:1px solid var(--border);border-radius:8px;padding:10px 13px;transition:all .22s}
+.tier-card:hover{border-color:#1a6aff2a;box-shadow:0 3px 12px #1a6aff12}
+.tier-card.inactive{opacity:.27;pointer-events:none}
+.tlabel{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;text-align:center;letter-spacing:2px}
+.tB{color:var(--blue2);text-shadow:0 0 10px #4d9fff44}
+.tBP{color:#a070ff;text-shadow:0 0 10px #a070ff44}
+.tA{color:#ff7755;text-shadow:0 0 10px #ff775544}
+.tS{color:var(--gold);text-shadow:0 0 10px #f5c84244}
+.tdesc{font-size:11px;color:var(--t2);line-height:1.65}
+.tdesc strong{color:var(--t1)}
+
+/* ─── TIMELINE ─── */
+.season-track{margin-bottom:16px;padding:12px 13px;background:var(--bg1);border:1px solid var(--border);border-radius:9px}
+.st-title{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.st-title .sorg{font-size:7px;padding:2px 7px;border-radius:20px;background:linear-gradient(135deg,var(--red),var(--purple));color:#fff}
+.strack{display:flex;align-items:flex-start;overflow-x:auto;padding-bottom:3px}
+.snode{display:flex;flex-direction:column;align-items:center;min-width:54px;position:relative}
+.snode:not(:last-child)::after{content:'';position:absolute;top:8px;left:calc(50% + 9px);right:calc(-50% + 9px);height:2px;background:linear-gradient(90deg,var(--blue)55,#1a3a5a)}
+.snode.sxl:not(:last-child)::after{background:linear-gradient(90deg,var(--orange)33,#1a1a1a)}
+.sdot{width:17px;height:17px;border-radius:50%;border:2px solid var(--blue2);background:var(--bg);
+  display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--blue2);
+  box-shadow:0 0 5px #4d9fff33;margin-bottom:4px;flex-shrink:0}
+.sdot.done{background:var(--blue);box-shadow:0 0 8px #1a6aff44}
+.sdot.sdx{border-color:var(--orange);background:#2a1200;color:var(--orange)}
+.sdot.sdu{border-color:var(--gold);background:#1a1200;color:var(--gold);animation:blink 1.5s infinite}
+.snode-n{font-family:'Rajdhani',sans-serif;font-size:7px;font-weight:600;color:var(--t2);text-align:center;white-space:nowrap}
+.snode-t{font-size:6px;color:var(--t3);margin-top:1px;text-align:center}
+.timeline{position:relative;padding-left:18px}
+.timeline::before{content:'';position:absolute;left:3px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--blue) 0%,var(--red) 70%,transparent 100%)}
+.tl-item{position:relative;margin-bottom:9px;padding:8px 11px;
+  background:var(--bg1);border:1px solid var(--border);border-radius:8px;transition:all .22s}
+.tl-item:hover{border-color:#1a6aff2a;box-shadow:0 3px 12px #1a6aff12}
+.tl-dot{position:absolute;left:-15px;top:12px;width:7px;height:7px;border-radius:50%;
+  border:2px solid var(--blue);background:var(--bg);box-shadow:0 0 5px #1a6aff44}
+.tl-dot.c{border-color:var(--orange);box-shadow:0 0 5px #e0704033}
+.tl-dot.u{border-color:var(--gold);box-shadow:0 0 6px #f5c84244;animation:blink 1.5s infinite}
+.tl-hdr{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px}
+.tl-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:#fff}
+.tl-org{font-size:7px;color:var(--blue2);padding:1px 6px;background:#1a6aff10;border:1px solid #1a6aff2a;border-radius:10px}
+.tl-season{font-size:7px;color:var(--t3);letter-spacing:1px}
+.tl-res{display:flex;gap:4px;flex-wrap:wrap}
+.tag-xl{font-size:7px;color:var(--orange);padding:1px 6px;background:#e0704010;border:1px solid #e0704033;border-radius:10px}
+.tag-up{font-size:7px;color:var(--gold);padding:1px 6px;background:#f5c84210;border:1px solid #f5c84233;border-radius:10px;animation:blink 1.5s infinite}
+.tag2vtl{font-size:7px;color:var(--t3);padding:1px 4px;background:#ffffff06;border:1px solid var(--border);border-radius:3px}
+
+/* ─── MODAL ─── */
+#overlay{display:none;position:fixed;inset:0;z-index:200;background:#000000bb;backdrop-filter:blur(5px);
+  align-items:center;justify-content:center;padding:14px;opacity:0;transition:opacity .22s}
+#overlay.open{opacity:1}
+#modal{background:var(--bg2);border:1px solid #1a6aff44;border-radius:12px;
+  width:100%;max-width:400px;padding:16px;position:relative;
+  box-shadow:0 12px 40px #00000088,0 0 26px #1a6aff18;
+  max-height:82vh;overflow-y:auto;
+  transform:translateY(10px);transition:transform .22s}
+#overlay.open #modal{transform:translateY(0)}
+.m-close{position:absolute;top:10px;right:10px;width:25px;height:25px;
+  background:#0d1828;border:1px solid var(--border);color:var(--t2);
+  border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.m-close:hover{background:var(--border);color:#fff}
+.m-name{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#fff;
+  margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.m-stats{display:flex;gap:6px;margin-bottom:10px}
+.ms{flex:1;text-align:center;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:7px 3px}
+.ms-n{font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700}
+.ms-l{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-top:1px}
+.m-sec{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);
+  margin:8px 0 5px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.m-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:6px 8px;
+  background:var(--bg);border-radius:6px;border:1px solid var(--border);margin-bottom:4px}
+
+/* ─── STATS DASHBOARD ─── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.dash-card{background:var(--bg1);border:1px solid var(--border);border-radius:9px;padding:13px 14px}
+.dash-card.full{grid-column:1/-1}
+.dash-title{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+.bar-chart{display:flex;flex-direction:column;gap:7px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-label{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--t1);min-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.bar-val{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;color:var(--blue2);min-width:18px;text-align:right}
+.donut-wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.donut-canvas{flex-shrink:0}
+.donut-legend{display:flex;flex-direction:column;gap:5px}
+.dleg-row{display:flex;align-items:center;gap:6px}
+.dleg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dleg-lbl{font-size:9px;color:var(--t2)}
+.dleg-val{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;color:var(--t1);margin-left:auto}
+.funfact-wrap{display:flex;flex-direction:column;gap:7px}
+.funfact{display:flex;align-items:flex-start;gap:9px;padding:8px 11px;background:var(--bg2);border-radius:7px;border:1px solid var(--border)}
+.funfact-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.funfact-text{font-size:10px;color:var(--t2);line-height:1.6}
+.funfact-text b{color:var(--t1)}
+
+/* ─── PREDICTION ─── */
+.pred-card{background:linear-gradient(135deg,#0f1a2e,#14102a);border:1px solid #f5c84222;border-radius:10px;padding:14px;margin-bottom:12px}
+.pred-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.pred-icon{font-size:18px}
+.pred-title{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:#fff}
+.pred-sub{font-size:8px;color:var(--t3);letter-spacing:1px}
+.pred-options{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.pred-opt{display:flex;align-items:center;gap:10px;padding:8px 11px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s}
+.pred-opt:hover{border-color:var(--blue2);background:#0d1e38}
+.pred-opt.voted{border-color:var(--gold);background:#1a1400}
+.pred-opt-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;color:#fff;flex:1}
+.pred-opt-bar{flex:2;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.pred-opt-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--gold));transition:width .6s ease}
+.pred-opt-pct{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;color:var(--gold);min-width:32px;text-align:right}
+.pred-total{font-size:8px;color:var(--t3);letter-spacing:1px;text-align:right}
+
+/* ─── ACHIEVEMENT SEARCH ─── */
+.ach-search-wrap{position:relative;margin-bottom:10px}
+.ach-search{width:100%;padding:7px 11px 7px 33px;background:var(--bg1);border:1px solid var(--border);
+  border-radius:7px;color:var(--t1);font-family:'Exo 2',sans-serif;font-size:12px;outline:none;transition:border-color .2s}
+.ach-search:focus{border-color:var(--blue);box-shadow:0 0 8px #1a6aff18}
+.ach-search::placeholder{color:var(--t3)}
+.prow.ach-hidden{display:none}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#162235;border-radius:2px}
+footer{position:relative;z-index:5;text-align:center;padding:14px;
+  color:var(--t3);font-size:8px;letter-spacing:2px;text-transform:uppercase;border-top:1px solid var(--border)}
+footer b{background:linear-gradient(90deg,var(--blue2),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+@media(max-width:540px){
+  .hdr-top{padding:8px 10px}.logo-text{font-size:13px}
+  main{padding:12px 8px 60px}
+  .tier-card{grid-template-columns:40px 1fr}.tlabel{font-size:17px}
+  .h2h-score{font-size:22px}
+  .dash-grid{grid-template-columns:1fr}
+  .dash-card.full{grid-column:1}
+}
+</style>
+</head>
+<body>
+<div id="stars"><canvas id="sc"></canvas></div>
+
+<header>
+  <div class="hdr-top">
+    <div class="logo-hex">ASB</div>
+    <div>
+      <div class="logo-text">ASB FOUNDATION</div>
+      <div class="logo-sub">Tournament Archive</div>
+    </div>
+    <div class="hdr-right">
+      <div class="live-dot"></div>
+      <div class="season-badge">2026 / 2027</div>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-n">11</div><div class="stat-l">Turnamen</div></div>
+    <div class="stat-item"><div class="stat-n">3</div><div class="stat-l">Organizer</div></div>
+    <div class="stat-item"><div class="stat-n">10</div><div class="stat-l">Players</div></div>
+    <div class="stat-item"><div class="stat-n">9</div><div class="stat-l">Selesai</div></div>
+    <div class="stat-item"><div class="stat-n">2</div><div class="stat-l">Canceled</div></div>
+    <div class="stat-item"><div class="stat-n">1</div><div class="stat-l">Upcoming</div></div>
+  </div>
+  <nav class="nav-bar">
+    <button class="nav-btn active" data-target="organizer"><div class="nav-num">1</div>Organizer</button>
+    <button class="nav-btn" data-target="achievement"><div class="nav-num">2</div>Achievement</button>
+    <button class="nav-btn" data-target="stats"><div class="nav-num">3</div>Stats</button>
+    <button class="nav-btn" data-target="h2h"><div class="nav-num">4</div>Head-to-Head</button>
+    <button class="nav-btn" data-target="hof"><div class="nav-num">5</div>Hall of Fame</button>
+    <button class="nav-btn" data-target="tier"><div class="nav-num">6</div>Tier</button>
+    <button class="nav-btn" data-target="timeline"><div class="nav-num">7</div>Timeline</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ═══ 1. ORGANIZER ═══ -->
+<section class="section active" id="organizer">
+  <div class="sec-title">List Organizer</div>
+  <div class="sec-sub">Semua organisasi yang terlibat dalam ASB Foundation</div>
+  <div class="search-wrap">
+    <span class="search-icon">&#9906;</span>
+    <input class="search-input" id="orgSearch" type="text" placeholder="Cari turnamen atau nama player...">
+  </div>
+  <div class="filter-row">
+    <button class="fpill on" data-f="all">Semua</button>
+    <button class="fpill fb" data-f="B">Tier B</button>
+    <button class="fpill fbp" data-f="B+">Tier B+</button>
+    <button class="fpill fa" data-f="A">Tier A</button>
+    <button class="fpill" data-f="canceled">Canceled</button>
+  </div>
+  <div style="display:inline-flex;align-items:center;gap:7px;margin-bottom:10px;padding:4px 11px;
+    background:linear-gradient(135deg,#1a6aff10,#e0263e07);border:1px solid #1a6aff18;border-radius:6px">
+    <span style="font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)">Founder</span>
+    <span style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:#fff">ASB Foundation</span>
+    <span style="width:5px;height:5px;border-radius:50%;background:var(--blue);box-shadow:0 0 5px var(--blue);animation:blink 2s infinite"></span>
+  </div>
+
+  <div class="org-block">
+    <div class="org-hdr">
+      <span class="org-tag">Organizer</span><span class="org-name">ASB</span>
+      <span class="org-count">3 turnamen</span>
+      <span class="org-badge" style="background:linear-gradient(135deg,var(--blue),var(--purple))">Original</span>
+    </div>
+    <div class="tr" data-tier="B" data-txt="acl s1 ryan dika 2024">
+      <div class="tr-name">ACL S1 2024/2025 <span class="tbadge tb">B</span></div>
+      <div class="tr-status">Completed</div>
+      <div class="tr-players"><span class="chip cchamp"><span class="ic">&#9733;</span>Ryan</span><span class="chip crunner"><span class="ir">&#9650;</span>Dika</span></div>
+    </div>
+    <div class="tr" data-tier="A" data-txt="a-worlds ryan yoga 2024">
+      <div class="tr-name">A-Worlds 2024/2025 <span class="tbadge ta">A</span></div>
+      <div class="tr-status">Completed</div>
+      <div class="tr-players"><span class="chip cchamp"><span class="ic">&#9733;</span>Ryan</span><span class="chip crunner"><span class="ir">&#9650;</span>Yoga</span></div>
+    </div>
+    <div class="tr" data-tier="B" data-txt="acl s2 fardhan ryan 2025">
+      <div class="tr-name">ACL S2 2025/2026 <span class="tbadge tb">B</span></div>
+      <div class="tr-status">Completed</div>
+      <div class="tr-players"><span class="chip cchamp"><span class="ic">&#9733;</span>Fardhan</span><span class="chip crunner"><span class="ir">&#9650;</span>Ryan</span></div>
+    </div>
+  </div>
+
+  <div class="org-block">
+    <div class="org-hdr">
+      <span class="org-tag">Organizer</span><span class="org-name">APLS1</span>
+      <span class="org-count">2 turnamen</span>
+    </div>
+    <div class="tr" data-tier="B" data-txt="ffs6 ryan yoga 2025">
+      <div class="tr-name">FFS6 2025/2026 <span class="tbadge tb">B</span></div>
+      <div class="tr-status">Completed</div>
+      <div class="tr-players"><span class="chip cchamp"><span class="ic">&#9733;</span>Ryan</span><span class="chip crunner"><span class="ir">&#9650;</span>Yoga</span></div>
+    </div>
+    <div class="tr" data-tier="canceled" data-txt="ffe2 canceled 2025">
+      <div class="tr-name">FFE2 2025/2026</div>
+      <div class="tr-status ct">Canceled</div>
+      <div class="tr-players"><span class="chip ccancel">&#8212; Canceled</span></div>
+    </div>
+  </div>
+
+  <div class="org-block">
+    <div class="org-hdr">
+      <span class="org-tag">Organizer</span><span class="org-name">ELITECL4SS</span>
+      <span class="org-count">6 turnamen</span>
+      <span class="org-badge" style="background:linear-gradient(135deg,var(--red),var(--purple))">Active</span>
+    </div>
+    <div class="tr" data-tier="B" data-txt="ec4 s1 dika ryan 2026"><div class="tr-name">EC4 S1 2026/2027 <span class="tbadge tb">B</span></div><div class="tr-status">Completed</div><div class="tr-players"><span class="chip cchamp"><span class="ic">&#9733;</span>Dika</span><span class="chip crunner"><span class="ir">&#9650;</span>Ryan</span></div></div>
+    <div class="tr" data-tier="B+" data-txt="er3 s2 ryan grezly 2026"><div class="tr-name">ER3 S2 2026/2027 <span class="tbadge tbp">B+</span></div><div class="tr-status">Completed</div><div class="tr-players"><span class="chip cchamp"><span class="ic">&#9733;</span>Ryan</span><span class="chip crunner"><span class="ir">&#9650;</span>Grezly</span></div></div>
+    <div class="tr" data-tier="B+" data-txt="dq1 s3 radit vander rasid rafael 2v2 2026"><div class="tr-name">DQ1 S3 2026/2027 <span class="tbadge tbp">B+</span> <span class="tag2v2">2v2</span></div><div class="tr-status">Completed</div><div class="tr-players"><span class="chip cchamp"><span class="ic">&#9733;</span>Radit &amp; Vander</span><span class="chip crunner"><span class="ir">&#9650;</span>Rasid &amp; Rafael</span></div></div>
+    <div class="tr" data-tier="canceled" data-txt="dyl s4 canceled 2026"><div class="tr-name">DYL S4 2026/2027</div><div class="tr-status ct">Canceled</div><div class="tr-players"><span class="chip ccancel">&#8212; Canceled</span></div></div>
+    <div class="tr" data-tier="B+" data-txt="ewl s5 farealz grezly 2026"><div class="tr-name">EWL S5 2026/2027 <span class="tbadge tbp">B+</span></div><div class="tr-status">Completed</div><div class="tr-players"><span class="chip cchamp"><span class="ic">&#9733;</span>Farealz</span><span class="chip crunner"><span class="ir">&#9650;</span>Grezly</span></div></div>
+    <div class="tr" data-tier="A" data-txt="hx f1 upcoming 2026"><div class="tr-name">HX F1 2026/2027 <span class="tbadge ta">A</span></div><div class="tr-status ut">Upcoming</div><div class="tr-players"><span class="chip ccoming">&#9675; Coming Soon</span></div></div>
+  </div>
+  <div class="no-result" id="noResult">Tidak ada hasil yang cocok.</div>
+</section>
+
+
+<!-- ═══ 2. ACHIEVEMENT ═══ -->
+<section class="section" id="achievement">
+  <div class="sec-title">Achievement Players</div>
+  <div class="sec-sub">Ranking berdasarkan total prestasi</div>
+  <div class="featured-card">
+    <div class="featured-glow"></div>
+    <div class="fc-icon">&#9819;</div>
+    <div class="fc-info">
+      <div class="fc-label">Most Dominant Player</div>
+      <div class="fc-name">Ryan</div>
+      <div class="fc-stat">4&#215; Champion &nbsp;&#183;&nbsp; 2&#215; Runner-up &nbsp;&#183;&nbsp; 6 Turnamen</div>
+      <div class="fc-chips"><span class="tbadge tb">B &#215;2</span><span class="tbadge tbp">B+ &#215;1</span><span class="tbadge ta">A &#215;1</span></div>
+    </div>
+  </div>
+  <p class="tap-hint">&#128075; Tap kartu player untuk detail lengkap</p>
+  <div class="ach-search-wrap">
+    <span class="search-icon">&#9906;</span>
+    <input class="ach-search" id="achSearch" type="text" placeholder="Cari nama player...">
+  </div>
+  <div class="lboard">
+    <div class="prow" data-player="Ryan">
+      <div class="prank rank1">1</div>
+      <div class="pinfo">
+        <div class="pname">Ryan</div><div class="psumm">4&#215; Champion &nbsp;&#183;&nbsp; 2&#215; Runner-up</div>
+        <div class="alist">
+          <div class="aitem"><span class="alabel lc">&#9733; Champion</span><span class="tbadge tb">B</span><span class="atourn">ACL S1 2024/2025</span></div>
+          <div class="aitem"><span class="alabel lc">&#9733; Champion</span><span class="tbadge ta">A</span><span class="atourn">A-Worlds 2024/2025</span></div>
+          <div class="aitem"><span class="alabel lc">&#9733; Champion</span><span class="tbadge tb">B</span><span class="atourn">FFS6 2025/2026</span></div>
+          <div class="aitem"><span class="alabel lc">&#9733; Champion</span><span class="tbadge tbp">B+</span><span class="atourn">ER3 S2 2026/2027</span></div>
+          <div class="aitem"><span class="alabel lr">&#9650; Runner-up</span><span class="tbadge tb">B</span><span class="atourn">ACL S2 2025/2026</span></div>
+          <div class="aitem"><span class="alabel lr">&#9650; Runner-up</span><span class="tbadge tb">B</span><span class="atourn">EC4 S1 2026/2027</span></div>
+        </div>
+        <div class="wrrow"><span class="wrl">Win Rate</span><div class="wrt"><div class="wrf" style="width:67%"></div></div><span class="wrp">67%</span></div>
+      </div>
+      <div class="btbadge btA">Best: A</div>
+    </div>
+    <div class="prow" data-player="Dika">
+      <div class="prank rank2">2</div>
+      <div class="pinfo"><div class="pname">Dika</div><div class="psumm">1&#215; Champion &nbsp;&#183;&nbsp; 1&#215; Runner-up</div>
+        <div class="alist">
+          <div class="aitem"><span class="alabel lc">&#9733; Champion</span><span class="tbadge tb">B</span><span class="atourn">EC4 S1 2026/2027</span></div>
+          <div class="aitem"><span class="alabel lr">&#9650; Runner-up</span><span class="tbadge tb">B</span><span class="atourn">ACL S1 2024/2025</span></div>
+        </div>
+        <div class="wrrow"><span class="wrl">Win Rate</span><div class="wrt"><div class="wrf" style="width:50%"></div></div><span class="wrp">50%</span></div>
+      </div><div class="btbadge btB">Best: B</div>
+    </div>
+    <div class="prow" data-player="Fardhan">
+      <div class="prank rank3">3</div>
+      <div class="pinfo"><div class="pname">Fardhan</div><div class="psumm">1&#215; Champion</div>
+        <div class="alist"><div class="aitem"><span class="alabel lc">&#9733; Champion</span><span class="tbadge tb">B</span><span class="atourn">ACL S2 2025/2026</span></div></div>
+        <div class="wrrow"><span class="wrl">Win Rate</span><div class="wrt"><div class="wrf" style="width:100%"></div></div><span class="wrp">100%</span></div>
+      </div><div class="btbadge btB">Best: B</div>
+    </div>
+    <div class="prow" data-player="Radit & Vander">
+      <div class="prank rank3">3</div>
+      <div class="pinfo"><div class="pname">Radit &amp; Vander <span style="font-size:7px;color:var(--t3);font-weight:400">Tim 2v2</span></div><div class="psumm">1&#215; Champion</div>
+        <div class="alist"><div class="aitem"><span class="alabel lc">&#9733; Champion</span><span class="tbadge tbp">B+</span><span class="atourn">DQ1 S3 2026/2027</span><span class="ateam" style="background:#ffd70010;border:1px solid #ffd70020">&#128101;</span></div></div>
+        <div class="wrrow"><span class="wrl">Win Rate</span><div class="wrt"><div class="wrf" style="width:100%"></div></div><span class="wrp">100%</span></div>
+      </div><div class="btbadge btBP">Best: B+</div>
+    </div>
+    <div class="prow" data-player="Farealz">
+      <div class="prank rank3">3</div>
+      <div class="pinfo"><div class="pname">Farealz</div><div class="psumm">1&#215; Champion</div>
+        <div class="alist"><div class="aitem"><span class="alabel lc">&#9733; Champion</span><span class="tbadge tbp">B+</span><span class="atourn">EWL S5 2026/2027</span></div></div>
+        <div class="wrrow"><span class="wrl">Win Rate</span><div class="wrt"><div class="wrf" style="width:100%"></div></div><span class="wrp">100%</span></div>
+      </div><div class="btbadge btBP">Best: B+</div>
+    </div>
+    <div class="prow" data-player="Yoga">
+      <div class="prank" style="color:var(--t2)">4</div>
+      <div class="pinfo"><div class="pname">Yoga</div><div class="psumm">2&#215; Runner-up</div>
+        <div class="alist">
+          <div class="aitem"><span class="alabel lr">&#9650; Runner-up</span><span class="tbadge ta">A</span><span class="atourn">A-Worlds 2024/2025</span></div>
+          <div class="aitem"><span class="alabel lr">&#9650; Runner-up</span><span class="tbadge tb">B</span><span class="atourn">FFS6 2025/2026</span></div>
+        </div>
+        <div class="wrrow"><span class="wrl">Win Rate</span><div class="wrt"><div class="wrf" style="width:0%"></div></div><span class="wrp">0%</span></div>
+      </div><div class="btbadge btA">Best: A</div>
+    </div>
+    <div class="prow" data-player="Grezly">
+      <div class="prank" style="color:var(--t2)">4</div>
+      <div class="pinfo"><div class="pname">Grezly</div><div class="psumm">2&#215; Runner-up</div>
+        <div class="alist">
+          <div class="aitem"><span class="alabel lr">&#9650; Runner-up</span><span class="tbadge tbp">B+</span><span class="atourn">ER3 S2 2026/2027</span></div>
+          <div class="aitem"><span class="alabel lr">&#9650; Runner-up</span><span class="tbadge tbp">B+</span><span class="atourn">EWL S5 2026/2027</span></div>
+        </div>
+        <div class="wrrow"><span class="wrl">Win Rate</span><div class="wrt"><div class="wrf" style="width:0%"></div></div><span class="wrp">0%</span></div>
+      </div><div class="btbadge btBP">Best: B+</div>
+    </div>
+    <div class="prow" data-player="Rasid & Rafael">
+      <div class="prank" style="color:var(--t3)">5</div>
+      <div class="pinfo"><div class="pname">Rasid &amp; Rafael <span style="font-size:7px;color:var(--t3);font-weight:400">Tim 2v2</span></div><div class="psumm">1&#215; Runner-up</div>
+        <div class="alist"><div class="aitem"><span class="alabel lr">&#9650; Runner-up</span><span class="tbadge tbp">B+</span><span class="atourn">DQ1 S3 2026/2027</span><span class="ateam" style="background:#e0704010;border:1px solid #e0704020">&#128101;</span></div></div>
+        <div class="wrrow"><span class="wrl">Win Rate</span><div class="wrt"><div class="wrf" style="width:0%"></div></div><span class="wrp">0%</span></div>
+      </div><div class="btbadge btBP">Best: B+</div>
+    </div>
+  </div>
+  <div class="legend-box" style="margin-top:10px">
+    <b style="color:var(--t2)">Keterangan :</b>
+    <span style="color:var(--gold);font-weight:700">&#9733; Champion</span> = Juara 1 &nbsp;|&nbsp;
+    <span style="color:var(--orange);font-weight:700">&#9650; Runner-up</span> = Juara 2 &nbsp;|&nbsp;
+    Win Rate = Champ &#247; (Champ + RU)
+  </div>
+</section>
+
+
+<!-- ═══ 3. STATS ═══ -->
+<section class="section" id="stats">
+  <div class="sec-title">Stats Dashboard</div>
+  <div class="sec-sub">Analisis data visual turnamen ASB Foundation</div>
+
+  <div class="dash-grid">
+
+    <!-- Champions bar chart -->
+    <div class="dash-card full">
+      <div class="dash-title">Champion Terbanyak</div>
+      <div class="bar-chart" id="champChart"></div>
+    </div>
+
+    <!-- Tier distribution donut -->
+    <div class="dash-card">
+      <div class="dash-title">Distribusi Tier (Selesai)</div>
+      <div class="donut-wrap">
+        <canvas class="donut-canvas" id="donutCanvas" width="80" height="80"></canvas>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+
+    <!-- Participation -->
+    <div class="dash-card">
+      <div class="dash-title">Turnamen per Season</div>
+      <div class="bar-chart" id="seasonChart"></div>
+    </div>
+
+    <!-- Fun facts -->
+    <div class="dash-card full">
+      <div class="dash-title">Fun Facts</div>
+      <div class="funfact-wrap">
+        <div class="funfact"><div class="funfact-icon">&#9889;</div><div class="funfact-text"><b>Ryan</b> hadir di <b>6 dari 9</b> turnamen selesai — muncul di 67% total turnamen.</div></div>
+        <div class="funfact"><div class="funfact-icon">&#127942;</div><div class="funfact-text">Dari 9 turnamen selesai, <b>5 juara berbeda</b> — bukti kompetisi yang merata.</div></div>
+        <div class="funfact"><div class="funfact-icon">&#128200;</div><div class="funfact-text">ELITECL4SS tier terus naik: B &#8594; B+ &#8594; B+ &#8594; B+ &#8594; <b>A</b> — perkembangan konsisten tiap season.</div></div>
+        <div class="funfact"><div class="funfact-icon">&#128101;</div><div class="funfact-text">DQ1 S3 adalah satu-satunya turnamen format <b>2v2</b> dalam sejarah ASB Foundation.</div></div>
+        <div class="funfact"><div class="funfact-icon">&#9888;</div><div class="funfact-text"><b>2 dari 11</b> turnamen dibatalkan (18%) — keduanya dari era yang berbeda.</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HX F1 PREDICTION -->
+  <div class="pred-card">
+    <div class="pred-header">
+      <div class="pred-icon">&#128302;</div>
+      <div>
+        <div class="pred-title">Prediksi HX F1 — Tier A Upcoming</div>
+        <div class="pred-sub">Siapa menurut kamu yang bakal juara? Tap untuk vote</div>
+      </div>
+    </div>
+    <div class="pred-options" id="predOptions"></div>
+    <div class="pred-total" id="predTotal">0 vote</div>
+  </div>
+
+</section>
+
+
+<!-- ═══ 4. HEAD-TO-HEAD ═══ -->
+<section class="section" id="h2h">
+  <div class="sec-title">Head-to-Head</div>
+  <div class="sec-sub">Pilih 2 player — lihat siapa yang lebih unggul</div>
+
+  <div class="h2h-select-row">
+    <select class="h2h-select" id="h2hP1">
+      <option value="">-- Pilih Player 1 --</option>
+    </select>
+    <div class="h2h-vs">VS</div>
+    <select class="h2h-select" id="h2hP2">
+      <option value="">-- Pilih Player 2 --</option>
+    </select>
+    <button class="h2h-go" id="h2hGo">Lihat</button>
+  </div>
+  <div id="h2hResult"></div>
+
+  <div class="div"></div>
+
+  <!-- AUTO-DETECTED RIVALRY -->
+  <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+    Rivalry Terpanas
+    <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)"></span>
+  </div>
+
+  <div class="rivalry-card">
+    <div class="rivalry-label">Rivalry #1 &nbsp;&#183;&nbsp; 3 Pertemuan</div>
+    <div class="rivalry-names">Ryan <span>vs</span> Grezly</div>
+    <div class="rivalry-stat">
+      <span>Ryan <b style="color:var(--gold)">2-0</b> Grezly dalam konteks champion vs runner-up</span>
+    </div>
+    <div class="rivalry-meetings">
+      <div class="riv-row"><span class="riv-tourn">ER3 S2 2026/2027</span><span class="tbadge tbp">B+</span><span class="riv-out" style="background:#0e332022;color:var(--green);border:1px solid #1a5a3033">Ryan &#9733;</span></div>
+      <div class="riv-row"><span class="riv-tourn">EWL S5 2026/2027</span><span class="tbadge tbp">B+</span><span class="riv-out" style="background:#3a1a0022;color:var(--orange);border:1px solid #6a402033">Grezly &#9650;</span></div>
+    </div>
+  </div>
+
+  <div class="rivalry-card" style="border-color:#4d9fff22">
+    <div class="rivalry-label" style="color:var(--blue2)">Rivalry #2 &nbsp;&#183;&nbsp; 2 Pertemuan
+      <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--blue2)22,transparent)"></span>
+    </div>
+    <div class="rivalry-names">Ryan <span style="color:var(--blue2)">vs</span> Yoga</div>
+    <div class="rivalry-stat"><span>Ryan <b style="color:var(--gold)">2-0</b> Yoga — dominasi penuh</span></div>
+    <div class="rivalry-meetings">
+      <div class="riv-row"><span class="riv-tourn">A-Worlds 2024/2025</span><span class="tbadge ta">A</span><span class="riv-out" style="background:#0e332022;color:var(--green);border:1px solid #1a5a3033">Ryan &#9733;</span></div>
+      <div class="riv-row"><span class="riv-tourn">FFS6 2025/2026</span><span class="tbadge tb">B</span><span class="riv-out" style="background:#0e332022;color:var(--green);border:1px solid #1a5a3033">Ryan &#9733;</span></div>
+    </div>
+  </div>
+
+  <div class="rivalry-card" style="border-color:#a070ff22">
+    <div class="rivalry-label" style="color:#a070ff">Rivalry #3 &nbsp;&#183;&nbsp; 2 Pertemuan
+      <span style="flex:1;height:1px;background:linear-gradient(90deg,#a070ff22,transparent)"></span>
+    </div>
+    <div class="rivalry-names">Ryan <span style="color:#a070ff">vs</span> Dika</div>
+    <div class="rivalry-stat"><span>Ryan <b style="color:var(--gold)">1</b>&#9733; &nbsp; Dika <b style="color:var(--gold)">1</b>&#9733; — seimbang!</span></div>
+    <div class="rivalry-meetings">
+      <div class="riv-row"><span class="riv-tourn">ACL S1 2024/2025</span><span class="tbadge tb">B</span><span class="riv-out" style="background:#0e332022;color:var(--green);border:1px solid #1a5a3033">Ryan &#9733;</span></div>
+      <div class="riv-row"><span class="riv-tourn">EC4 S1 2026/2027</span><span class="tbadge tb">B</span><span class="riv-out" style="background:#0e332022;color:var(--green);border:1px solid #1a5a3033">Dika &#9733;</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ 4. HALL OF FAME ═══ -->
+<section class="section" id="hof">
+  <div class="sec-title">Hall of Fame</div>
+  <div class="sec-sub">Milestone dan rekor bersejarah ASB Foundation</div>
+  <div class="hof-grid">
+
+    <div class="hof-card gold">
+      <div class="hof-icon" style="color:var(--gold)">&#9819;</div>
+      <div class="hof-info">
+        <div class="hof-title">Most All-Time Champion</div>
+        <div class="hof-name">Ryan</div>
+        <div class="hof-desc">4 gelar juara di berbagai turnamen &amp; tier — rekor tertinggi</div>
+      </div>
+      <div class="hof-badge" style="background:#1a1400;color:var(--gold);border:1px solid #f5c84233">4&#215; &#9733;</div>
+    </div>
+
+    <div class="hof-card blue">
+      <div class="hof-icon" style="color:var(--blue2)">&#9733;</div>
+      <div class="hof-info">
+        <div class="hof-title">First Ever Champion</div>
+        <div class="hof-name">Ryan</div>
+        <div class="hof-desc">Juara pertama dalam sejarah ASB Foundation — ACL S1 2024/2025</div>
+      </div>
+      <div class="hof-badge" style="background:#0a2448;color:var(--blue2);border:1px solid #1a6aff33">Pioneer</div>
+    </div>
+
+    <div class="hof-card red">
+      <div class="hof-icon" style="color:var(--red2)">&#9650;</div>
+      <div class="hof-info">
+        <div class="hof-title">Most Runner-Up</div>
+        <div class="hof-name">Ryan</div>
+        <div class="hof-desc">2&#215; Runner-up sekaligus 4&#215; Champion — konsistensi luar biasa di setiap turnamen</div>
+      </div>
+      <div class="hof-badge" style="background:#2e0d12;color:#ff7755;border:1px solid #e0263e33">2&#215; &#9650;</div>
+    </div>
+
+    <div class="hof-card purple">
+      <div class="hof-icon" style="color:#c090ff">&#9670;</div>
+      <div class="hof-info">
+        <div class="hof-title">First Tier A Champion</div>
+        <div class="hof-name">Ryan</div>
+        <div class="hof-desc">Pertama meraih gelar di level Tier A — A-Worlds 2024/2025, turnamen bergengsi ASB</div>
+      </div>
+      <div class="hof-badge" style="background:#1a1040;color:#a070ff;border:1px solid #7040c833">Tier A</div>
+    </div>
+
+    <div class="hof-card green">
+      <div class="hof-icon" style="color:var(--green)">&#128101;</div>
+      <div class="hof-info">
+        <div class="hof-title">First 2v2 Champions</div>
+        <div class="hof-name">Radit &amp; Vander</div>
+        <div class="hof-desc">Tim pertama yang memenangkan format 2v2 — DQ1 S3 2026/2027</div>
+      </div>
+      <div class="hof-badge" style="background:#0e3320;color:var(--green);border:1px solid #3dba7233">2v2 &#9733;</div>
+    </div>
+
+    <div class="hof-card gold">
+      <div class="hof-icon" style="color:#a070ff">&#9672;</div>
+      <div class="hof-info">
+        <div class="hof-title">First B+ Champion (ELITECL4SS Era)</div>
+        <div class="hof-name">Ryan</div>
+        <div class="hof-desc">Juara pertama di level Tier B+ — ER3 S2 2026/2027, menandai era baru ELITECL4SS</div>
+      </div>
+      <div class="hof-badge" style="background:#1a1040;color:#a070ff;border:1px solid #a070ff33">B+ Era</div>
+    </div>
+
+    <div class="hof-card blue">
+      <div class="hof-icon" style="color:var(--orange)">&#9651;</div>
+      <div class="hof-info">
+        <div class="hof-title">Most Consistent Runner-Up</div>
+        <div class="hof-name">Yoga &amp; Grezly</div>
+        <div class="hof-desc">Masing-masing 2&#215; Runner-up — selalu finish top 2 di setiap turnamen yang diikuti</div>
+      </div>
+      <div class="hof-badge" style="background:#3a1a0022;color:var(--orange);border:1px solid #e0704033">2&#215; RU</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══ 5. TIER ═══ -->
+<section class="section" id="tier">
+  <div class="sec-title">Tier Classification</div>
+  <div class="sec-sub">Sistem klasifikasi turnamen ASB Foundation</div>
+  <div class="compare-toggle">
+    <button class="ctbtn on" data-sys="new">Sistem Baru — ELITECL4SS</button>
+    <button class="ctbtn" data-sys="old">Sistem Lama — ASB</button>
+  </div>
+  <div id="sysNew">
+    <div class="tier-grid">
+      <div class="tier-card"><div class="tlabel tB">B</div><div class="tdesc"><strong>Lokal</strong> — 1 kabupaten / 1 daerah. Tidak ada syarat prizepool minimum.</div></div>
+      <div class="tier-card"><div class="tlabel tBP">B+</div><div class="tdesc"><strong>Regional Kecil</strong> — Ada player dari kabupaten lain. Prizepool minimum <strong>5+</strong>.</div></div>
+      <div class="tier-card"><div class="tlabel tA">A</div><div class="tdesc"><strong>Tier Atas</strong> — Ada player dari kabupaten lain. Min. <strong>5 player (Liga 2 Leg)</strong> atau <strong>8 player (Gugur/DE)</strong>. Prizepool <strong>10+</strong>.</div></div>
+      <div class="tier-card"><div class="tlabel tS">S</div><div class="tdesc"><strong>Premier</strong> — Prizepool <strong>25+</strong>. Ada player dari kabupaten lain. Min. <strong>5</strong> atau <strong>8 player</strong> tergantung format.</div></div>
+    </div>
+  </div>
+  <div id="sysOld" style="display:none">
+    <div class="tier-grid">
+      <div class="tier-card"><div class="tlabel tB">B</div><div class="tdesc"><strong>Lokal Kelas</strong> — Turnamen dalam satu kelas. Skala terkecil dalam ekosistem ASB awal.</div></div>
+      <div class="tier-card"><div class="tlabel tBP">B+</div><div class="tdesc"><strong>Antar Kelas/Sekolah</strong> — Ada player dari kelas atau sekolah lain.</div></div>
+      <div class="tier-card"><div class="tlabel tA">A</div><div class="tdesc"><strong>Worlds</strong> — Format Worlds. Ada player dari kelas/sekolah lain + prizepool. Tier tertinggi sistem lama.</div></div>
+      <div class="tier-card inactive"><div class="tlabel tS">S</div><div class="tdesc"><strong>Tidak Ada</strong> — Tier S tidak digunakan dalam sistem lama ASB.</div></div>
+    </div>
+  </div>
+  <div class="div"></div>
+  <div class="legend-box">
+    <b style="color:var(--t2)">Perbedaan Utama :</b><br>
+    Sistem Lama &#8594; unit <b style="color:var(--t1)">Kelas/Sekolah</b> &nbsp;|&nbsp;
+    Sistem Baru &#8594; unit <b style="color:var(--t1)">Kabupaten/Daerah</b><br>
+    Sistem Baru lebih eksplisit soal <b style="color:var(--t1)">Prizepool</b> &amp; <b style="color:var(--t1)">Jumlah Player</b>
+  </div>
+</section>
+
+
+<!-- ═══ 6. TIMELINE ═══ -->
+<section class="section" id="timeline">
+  <div class="sec-title">Timeline</div>
+  <div class="sec-sub">Kronologi semua turnamen dari awal hingga sekarang</div>
+  <div class="season-track">
+    <div class="st-title">Progress Season <span class="sorg">ELITECL4SS</span></div>
+    <div class="strack">
+      <div class="snode"><div class="sdot done">S1</div><div class="snode-n">EC4</div><div class="snode-t">Tier B</div></div>
+      <div class="snode"><div class="sdot done">S2</div><div class="snode-n">ER3</div><div class="snode-t">Tier B+</div></div>
+      <div class="snode"><div class="sdot done">S3</div><div class="snode-n">DQ1</div><div class="snode-t">Tier B+</div></div>
+      <div class="snode sxl"><div class="sdot sdx">S4</div><div class="snode-n" style="color:var(--orange)">DYL</div><div class="snode-t">Canceled</div></div>
+      <div class="snode"><div class="sdot done">S5</div><div class="snode-n">EWL</div><div class="snode-t">Tier B+</div></div>
+      <div class="snode"><div class="sdot sdu">F1</div><div class="snode-n" style="color:var(--gold)">HX</div><div class="snode-t" style="color:var(--gold)">Tier A</div></div>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-hdr"><span class="tl-name">ACL S1</span><span class="tbadge tb">B</span><span class="tl-org">ASB</span><span class="tl-season">2024/2025</span></div><div class="tl-res"><span class="chip cchamp" style="font-size:8px"><span class="ic">&#9733;</span>Ryan</span><span class="chip crunner" style="font-size:8px"><span class="ir">&#9650;</span>Dika</span></div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-hdr"><span class="tl-name">A-Worlds</span><span class="tbadge ta">A</span><span class="tl-org">ASB</span><span class="tl-season">2024/2025</span></div><div class="tl-res"><span class="chip cchamp" style="font-size:8px"><span class="ic">&#9733;</span>Ryan</span><span class="chip crunner" style="font-size:8px"><span class="ir">&#9650;</span>Yoga</span></div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-hdr"><span class="tl-name">ACL S2</span><span class="tbadge tb">B</span><span class="tl-org">ASB</span><span class="tl-season">2025/2026</span></div><div class="tl-res"><span class="chip cchamp" style="font-size:8px"><span class="ic">&#9733;</span>Fardhan</span><span class="chip crunner" style="font-size:8px"><span class="ir">&#9650;</span>Ryan</span></div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-hdr"><span class="tl-name">FFS6</span><span class="tbadge tb">B</span><span class="tl-org">APLS1</span><span class="tl-season">2025/2026</span></div><div class="tl-res"><span class="chip cchamp" style="font-size:8px"><span class="ic">&#9733;</span>Ryan</span><span class="chip crunner" style="font-size:8px"><span class="ir">&#9650;</span>Yoga</span></div></div>
+    <div class="tl-item"><div class="tl-dot c"></div><div class="tl-hdr"><span class="tl-name" style="color:var(--t3)">FFE2</span><span class="tl-org">APLS1</span><span class="tl-season">2025/2026</span><span class="tag-xl">CANCELED</span></div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-hdr"><span class="tl-name">EC4 S1</span><span class="tbadge tb">B</span><span class="tl-org">ELITECL4SS</span><span class="tl-season">2026/2027</span></div><div class="tl-res"><span class="chip cchamp" style="font-size:8px"><span class="ic">&#9733;</span>Dika</span><span class="chip crunner" style="font-size:8px"><span class="ir">&#9650;</span>Ryan</span></div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-hdr"><span class="tl-name">ER3 S2</span><span class="tbadge tbp">B+</span><span class="tl-org">ELITECL4SS</span><span class="tl-season">2026/2027</span></div><div class="tl-res"><span class="chip cchamp" style="font-size:8px"><span class="ic">&#9733;</span>Ryan</span><span class="chip crunner" style="font-size:8px"><span class="ir">&#9650;</span>Grezly</span></div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-hdr"><span class="tl-name">DQ1 S3</span><span class="tbadge tbp">B+</span><span class="tl-org">ELITECL4SS</span><span class="tl-season">2026/2027</span><span class="tag2vtl">2v2</span></div><div class="tl-res"><span class="chip cchamp" style="font-size:8px"><span class="ic">&#9733;</span>Radit &amp; Vander</span><span class="chip crunner" style="font-size:8px"><span class="ir">&#9650;</span>Rasid &amp; Rafael</span></div></div>
+    <div class="tl-item"><div class="tl-dot c"></div><div class="tl-hdr"><span class="tl-name" style="color:var(--t3)">DYL S4</span><span class="tl-org">ELITECL4SS</span><span class="tl-season">2026/2027</span><span class="tag-xl">CANCELED</span></div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-hdr"><span class="tl-name">EWL S5</span><span class="tbadge tbp">B+</span><span class="tl-org">ELITECL4SS</span><span class="tl-season">2026/2027</span></div><div class="tl-res"><span class="chip cchamp" style="font-size:8px"><span class="ic">&#9733;</span>Farealz</span><span class="chip crunner" style="font-size:8px"><span class="ir">&#9650;</span>Grezly</span></div></div>
+    <div class="tl-item"><div class="tl-dot u"></div><div class="tl-hdr"><span class="tl-name">HX F1</span><span class="tbadge ta">A</span><span class="tl-org">ELITECL4SS</span><span class="tl-season">2026/2027</span><span class="tag-up">UPCOMING</span></div><div class="tl-res"><span class="chip ccoming" style="font-size:8px">&#9675; Coming Soon</span></div></div>
+  </div>
+</section>
+
+</main>
+
+<!-- MODAL -->
+<div id="overlay">
+  <div id="modal">
+    <button class="m-close" id="mClose">&times;</button>
+    <div id="mContent"></div>
+  </div>
+</div>
+
+<footer>&copy; 2026 <b>ASB Foundation</b> &nbsp;&#183;&nbsp; Free Fire Esports Archive</footer>
+
+<script>
+/* ─── STARFIELD ─── */
+(function(){
+  var c=document.getElementById('sc'),ctx=c.getContext('2d'),s=[];
+  function rsz(){c.width=innerWidth;c.height=innerHeight}rsz();onresize=rsz;
+  for(var i=0;i<90;i++) s.push({x:Math.random(),y:Math.random(),r:Math.random()*.8+.2,
+    o:Math.random()*.4+.1,sp:Math.random()*.0003+.0001,
+    col:['#4d9fff77','#ffffff44','#e0263e33','#a070ff33'][0|Math.random()*4]});
+  (function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    s.forEach(function(p){
+      p.o+=p.sp*(Math.random()>.5?1:-1);p.o=Math.max(.05,Math.min(.7,p.o));
+      ctx.beginPath();ctx.arc(p.x*c.width,p.y*c.height,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.col;ctx.globalAlpha=p.o;ctx.fill();
+    });ctx.globalAlpha=1;requestAnimationFrame(draw);
+  })();
+})();
+
+/* ─── DATA ─── */
+var PLAYERS=['Ryan','Dika','Fardhan','Radit & Vander','Farealz','Yoga','Grezly','Rasid & Rafael'];
+var PD={
+  'Ryan':{c:4,r:2,wr:67,bt:'A',achiev:[
+    {t:'c',tier:'B',tourn:'ACL S1 2024/2025',org:'ASB'},
+    {t:'c',tier:'A',tourn:'A-Worlds 2024/2025',org:'ASB'},
+    {t:'c',tier:'B',tourn:'FFS6 2025/2026',org:'APLS1'},
+    {t:'c',tier:'B+',tourn:'ER3 S2 2026/2027',org:'ELITECL4SS'},
+    {t:'r',tier:'B',tourn:'ACL S2 2025/2026',org:'ASB'},
+    {t:'r',tier:'B',tourn:'EC4 S1 2026/2027',org:'ELITECL4SS'},
+  ]},
+  'Dika':{c:1,r:1,wr:50,bt:'B',achiev:[
+    {t:'c',tier:'B',tourn:'EC4 S1 2026/2027',org:'ELITECL4SS'},
+    {t:'r',tier:'B',tourn:'ACL S1 2024/2025',org:'ASB'},
+  ]},
+  'Fardhan':{c:1,r:0,wr:100,bt:'B',achiev:[{t:'c',tier:'B',tourn:'ACL S2 2025/2026',org:'ASB'}]},
+  'Radit & Vander':{c:1,r:0,wr:100,bt:'B+',team:true,achiev:[{t:'c',tier:'B+',tourn:'DQ1 S3 2026/2027',org:'ELITECL4SS'}]},
+  'Farealz':{c:1,r:0,wr:100,bt:'B+',achiev:[{t:'c',tier:'B+',tourn:'EWL S5 2026/2027',org:'ELITECL4SS'}]},
+  'Yoga':{c:0,r:2,wr:0,bt:'A',achiev:[
+    {t:'r',tier:'A',tourn:'A-Worlds 2024/2025',org:'ASB'},
+    {t:'r',tier:'B',tourn:'FFS6 2025/2026',org:'APLS1'},
+  ]},
+  'Grezly':{c:0,r:2,wr:0,bt:'B+',achiev:[
+    {t:'r',tier:'B+',tourn:'ER3 S2 2026/2027',org:'ELITECL4SS'},
+    {t:'r',tier:'B+',tourn:'EWL S5 2026/2027',org:'ELITECL4SS'},
+  ]},
+  'Rasid & Rafael':{c:0,r:1,wr:0,bt:'B+',team:true,achiev:[{t:'r',tier:'B+',tourn:'DQ1 S3 2026/2027',org:'ELITECL4SS'}]},
+};
+var TC={'B':'tbadge tb','B+':'tbadge tbp','A':'tbadge ta'};
+
+/* Build H2H selects */
+function buildSelects(){
+  ['h2hP1','h2hP2'].forEach(function(id){
+    var sel=document.getElementById(id);
+    PLAYERS.forEach(function(p){
+      var o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);
+    });
+  });
+}
+
+/* H2H Logic */
+function calcH2H(p1,p2){
+  var a1=PD[p1]?PD[p1].achiev:[];
+  var a2=PD[p2]?PD[p2].achiev:[];
+  var t1={},t2={};
+  a1.forEach(function(a){t1[a.tourn]=a.t});
+  a2.forEach(function(a){t2[a.tourn]=a.t});
+  var meets=[],w1=0,w2=0;
+  Object.keys(t1).forEach(function(tourn){
+    if(t2[tourn]!==undefined){
+      var r1=t1[tourn],r2=t2[tourn];
+      var winner=r1==='c'?p1:(r2==='c'?p2:null);
+      if(winner===p1)w1++;else if(winner===p2)w2++;
+      var tier='';
+      (PD[p1].achiev||[]).forEach(function(a){if(a.tourn===tourn)tier=a.tier});
+      meets.push({tourn:tourn,winner:winner,tier:tier,r1:r1,r2:r2});
+    }
+  });
+  return{w1:w1,w2:w2,meets:meets};
+}
+
+function showH2H(){
+  var p1=document.getElementById('h2hP1').value;
+  var p2=document.getElementById('h2hP2').value;
+  var el=document.getElementById('h2hResult');
+  if(!p1||!p2){el.innerHTML='<div class="h2h-nomeet">Pilih 2 player terlebih dahulu.</div>';return}
+  if(p1===p2){el.innerHTML='<div class="h2h-nomeet">Pilih 2 player yang berbeda.</div>';return}
+  var res=calcH2H(p1,p2);
+  var d1=PD[p1],d2=PD[p2];
+  var h='<div class="h2h-result">';
+  h+='<div class="h2h-header">';
+  h+='<div class="h2h-player"><div class="h2h-pname">'+p1+'</div><div class="h2h-pstat">'+d1.c+'&#9733; '+d1.r+'&#9650;</div></div>';
+  h+='<div class="h2h-score">'+res.w1+' &mdash; '+res.w2+'</div>';
+  h+='<div class="h2h-player" style="text-align:right"><div class="h2h-pname">'+p2+'</div><div class="h2h-pstat">'+d2.c+'&#9733; '+d2.r+'&#9650;</div></div>';
+  h+='</div>';
+  h+='<div class="h2h-meetings">';
+  if(res.meets.length===0){
+    h+='<div class="h2h-nomeet">Kedua player belum pernah bertemu di turnamen yang sama.</div>';
+  }else{
+    h+='<div class="h2h-meet-title">'+res.meets.length+' Pertemuan Langsung</div>';
+    res.meets.forEach(function(m){
+      var isW1=m.winner===p1;
+      h+='<div class="h2h-meet-row">';
+      h+='<div class="h2h-meet-tourn">'+m.tourn+'</div>';
+      h+='<span class="'+(TC[m.tier]||'tbadge tb')+'">'+m.tier+'</span>';
+      if(m.winner){
+        h+='<span class="h2h-meet-result '+(isW1?'h2h-win1':'h2h-win2')+'">'+m.winner+' &#9733;</span>';
+      }
+      h+='</div>';
+    });
+  }
+  h+='</div></div>';
+  el.innerHTML=h;
+}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded',function(){
+  buildSelects();
+
+  /* NAV */
+  document.querySelectorAll('.nav-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+      document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.remove('active')});
+      document.getElementById(b.dataset.target).classList.add('active');
+      b.classList.add('active');
+    });
+  });
+
+  /* FILTER */
+  var cur='all',si=document.getElementById('orgSearch');
+  document.querySelectorAll('.fpill').forEach(function(p){
+    p.addEventListener('click',function(){
+      document.querySelectorAll('.fpill').forEach(function(x){x.classList.remove('on')});
+      p.classList.add('on');cur=p.dataset.f;doFilter();
+    });
+  });
+  if(si) si.addEventListener('input',doFilter);
+  function doFilter(){
+    var q=si?si.value.toLowerCase():'',vis=0;
+    document.querySelectorAll('.tr').forEach(function(r){
+      var ok=(cur==='all'||r.dataset.tier===cur)&&(q===''||(r.dataset.txt+' '+r.innerText.toLowerCase()).indexOf(q)!==-1);
+      r.classList.toggle('hidden',!ok);if(ok)vis++;
+    });
+    var nr=document.getElementById('noResult');
+    if(nr)nr.style.display=vis===0?'block':'none';
+  }
+
+  /* PLAYER MODAL */
+  document.querySelectorAll('.prow[data-player]').forEach(function(row){
+    row.addEventListener('click',function(){openModal(row.dataset.player)});
+  });
+  document.getElementById('mClose').addEventListener('click',closeModal);
+  document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+  /* H2H BUTTON */
+  document.getElementById('h2hGo').addEventListener('click',showH2H);
+
+  /* TIER TOGGLE */
+  document.querySelectorAll('.ctbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.ctbtn').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');
+      document.getElementById('sysNew').style.display=b.dataset.sys==='new'?'block':'none';
+      document.getElementById('sysOld').style.display=b.dataset.sys==='old'?'block':'none';
+    });
+  });
+});
+
+function openModal(name){
+  var p=PD[name];if(!p)return;
+  var h='<div class="m-name">'+name+(p.team?' <span style="font-size:8px;color:var(--t3);font-weight:400">Tim 2v2</span>':'')+'</div>';
+  h+='<div class="m-stats">';
+  if(p.c>0)h+='<div class="ms"><div class="ms-n" style="color:var(--gold)">'+p.c+'</div><div class="ms-l">Champ</div></div>';
+  if(p.r>0)h+='<div class="ms"><div class="ms-n" style="color:var(--orange)">'+p.r+'</div><div class="ms-l">Runner</div></div>';
+  h+='<div class="ms"><div class="ms-n" style="color:var(--blue2)">'+p.wr+'%</div><div class="ms-l">Win Rate</div></div>';
+  h+='<div class="ms"><div class="ms-n" style="color:#a070ff">'+p.bt+'</div><div class="ms-l">Best Tier</div></div>';
+  h+='</div><div class="m-sec">Riwayat Prestasi</div>';
+  p.achiev.forEach(function(a){
+    var isC=a.t==='c';
+    h+='<div class="m-row"><span style="font-size:9px;font-weight:700;min-width:60px;color:'+(isC?'var(--gold)':'var(--orange)')+'">'+
+       (isC?'&#9733; Champ':'&#9650; Runner')+'</span>';
+    h+='<span class="'+TC[a.tier]+'">'+a.tier+'</span>';
+    h+='<span style="font-size:10px;color:var(--t2);flex:1">'+a.tourn+'</span>';
+    h+='<span style="font-size:8px;color:var(--t3)">'+a.org+'</span></div>';
+  });
+  document.getElementById('mContent').innerHTML=h;
+  var ov=document.getElementById('overlay');
+  ov.style.display='flex';
+  requestAnimationFrame(function(){requestAnimationFrame(function(){ov.classList.add('open')})});
+}
+function closeModal(){
+  var ov=document.getElementById('overlay');
+  ov.classList.remove('open');
+  setTimeout(function(){ov.style.display='none'},230);
+}
+</script>
+</body>
+</html>
